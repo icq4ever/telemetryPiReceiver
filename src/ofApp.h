@@ -61,6 +61,9 @@ public:
 	int speedKmh;
 	bool drsAvailable;
 	bool drsEnabled;
+
+	float heading, pitch, roll;
+	float carCoordinatesX, carCoordinatesY, carCoordinatesZ;
 	float accX, accY, accZ;
 	float velocityX, velocityY, velocityZ;
 	float tireTempFL, tireTempFR, tireTempRL, tireTempRR;

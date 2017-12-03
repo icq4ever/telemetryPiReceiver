@@ -44,6 +44,15 @@ void ofApp::update(){
 		if (m.getAddress() == "/telemetry/gear")			gear = m.getArgAsInt32(0);
 		if (m.getAddress() == "/telemetry/rpms")			rpms = m.getArgAsInt32(0);
 		if (m.getAddress() == "/telemetry/speedKmh")		speedKmh = (int)m.getArgAsFloat(0);
+
+		if (m.getAddress() == "/telemetry/heading")			heading = m.getArgAsFloat(0);
+		if (m.getAddress() == "/telemetry/pitch")			pitch = m.getArgAsFloat(0);
+		if (m.getAddress() == "/telemetry/roll")			roll = m.getArgAsFloat(0);
+
+		if (m.getAddress() == "/telemetry/carCoorindates/x")	carCoordinatesX = m.getArgAsFloat(0);;
+		if (m.getAddress() == "/telemetry/carCoorindates/y")	carCoordinatesY = m.getArgAsFloat(0);;
+		if (m.getAddress() == "/telemetry/carCoorindates/z")	carCoordinatesZ = m.getArgAsFloat(0);;
+
 		
 		if (m.getAddress() == "/telemetry/accG/x")			accX = m.getArgAsFloat(0);
 		if (m.getAddress() == "/telemetry/accG/y")			accY = m.getArgAsFloat(0);
@@ -90,7 +99,7 @@ void ofApp::draw(){
 	//ofBackground(54);
 	
 	drawInputStatus(50, 50);
-	drawRpmSpeed(300, 50);
+	drawRpmSpeed(400, 50);
 	drawLapTimeInformation(50, 300);
 	rpmDrawing(300, 300);
 }
@@ -100,9 +109,9 @@ void ofApp::drawInputStatus(int x, int y) {
 	ofPushStyle();
 	ofTranslate(x, y);
 	ofSetHexColor(0x000000);
-	ofDrawRectangle(0, 0, 208, 100);
+	ofDrawRectangle(0, 0, 288, 100);
 
-	ofDrawBitmapStringHighlight("INPUT STATUS \nclutch / brake / throttle", 4, 110);
+	ofDrawBitmapStringHighlight("INPUT STATUS \nclutch / brake / throttle / steer  ", 4, 110);
 	
 	// draw Clutch
 	ofTranslate(40, 10);
@@ -128,6 +137,19 @@ void ofApp::drawInputStatus(int x, int y) {
 	ofNoFill();
 	ofDrawRectangle(0, 0, 20, 80);
 
+	ofTranslate(50, 0);
+	ofNoFill();
+	ofSetColor(ofColor::white);
+	ofPushMatrix();
+	ofTranslate(40, 40);
+	ofRotate(ofMap(steerAngle, -1, 1, -180, 180));
+	//cout << steerAngle << endl;
+	ofDrawLine(0, -40, 0, -30);
+	ofDrawCircle(0, 0, 40);
+	ofDrawCircle(0, 0, 30);
+	ofDrawLine(-30, 0, 30, 0);
+	ofDrawLine(0, 0, 0, 30);
+	ofPopMatrix();
 	ofPopStyle();
 	ofPopMatrix();
 }
