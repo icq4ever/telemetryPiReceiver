@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
+#include "canvas.h"
 
 #define PORT 9000
 #define recInterval 100
@@ -10,6 +11,48 @@ struct timeTemplate {
 	int min;
 	int second;
 	int millisecond;
+
+};
+
+struct TstaticData {
+	string carInfo;
+	string trackInfo;
+	string playerName;
+
+	// car info
+	float maxTorque;
+	float maxRpm;
+	bool hasDRS;
+	bool hasERS;
+
+	int lastLapTimeMillis;
+	int bestLapTimeMillis;
+	int completedLaps;
+};
+
+struct telemetryData {
+	int gear;
+	int rpm;
+	int speedKmh;
+	int drsAvailable;
+	int drsEnabled;
+
+	float heading;	// heading of the car on world coord
+	float pitch;	// pitch of the car on world coord
+	float roll;		// roll of the car on world coord
+	ofVec3f carCoordinates;		// car position on world coord(x,y,z)
+	ofVec3f accG;
+	ofVec3f velocity;
+	ofVec4f tireTemp;
+
+	float throttle;
+	float brake;
+	float clutch;
+	float steerAngle;
+
+	float normalizedCarPosition;
+	float currentLapTimeMillis;
+	
 };
 
 class ofApp : public ofBaseApp{
@@ -32,47 +75,7 @@ public:
 	void gotMessage(ofMessage msg);
 		
 	ofxOscReceiver receiver;
-	string messageAddrHeader = "/telemetry/";
-
-
-	// player information
-	string carInfo;
-	string trackInfo;
-	string playerName;
-
-	float layoutLength;
-
-	// car info
-	float maxTorque;
-	float maxRpm;
-	bool hasDRS;
-	bool hasERS;
-
-	// lap info
-	int completedLaps;
-	int currentLapTimeMillis;
-	int lastLapTimeMillis;
-	int bestLapTimeMillis;
-	float normalizedCarPosition;
-
-	// car status
-	int gear;
-	int rpms;
-	int speedKmh;
-	bool drsAvailable;
-	bool drsEnabled;
-
-	float heading, pitch, roll;
-	float carCoordinatesX, carCoordinatesY, carCoordinatesZ;
-	float accX, accY, accZ;
-	float velocityX, velocityY, velocityZ;
-	float tireTempFL, tireTempFR, tireTempRL, tireTempRR;
-
-	// controller information
-	float throttle;
-	float brake;
-	float clutch;
-	float steerAngle;
+	void getOSCMessage();
 
 	// osc save
 	int64_t lastCheckedTimer;
@@ -96,10 +99,12 @@ public:
 	timeTemplate bestLap;
 
 	ofFbo rpmFbo;
-
-	vector<int> tele_gears;
-	vector<int> tele_rpm;
-	vector<int> tele_speed;
 	//ofPixels rpmPixels;
+
+	canvas drawingCanvas;
+
+	TstaticData staticData;
+	telemetryData tData;
+	ofPolyline layout;
 };
 
