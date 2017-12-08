@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
-#include "canvas.h"
+//#include "canvas.h"
 #include "ofxTrueTypeFontUL2.h"
 
 #define PORT 9000
@@ -116,11 +116,11 @@ public:
 	TstaticData staticData;
 	telemetryData tData;
 	//ofPolyline layout;
-	Canvas canvas;
+	//Canvas canvas;
 	
-	ofxTrueTypeFontUL2 headerFont;
-	ofxTrueTypeFontUL2 gearFont;
-	ofxTrueTypeFontUL2 descFont;
+	//ofxTrueTypeFontUL2 headerFont;
+	//ofxTrueTypeFontUL2 gearFont;
+	//ofxTrueTypeFontUL2 descFont;
 	ofxTrueTypeFontUL2 bigFont1;
 	ofxTrueTypeFontUL2 bigFont2;
 	ofxTrueTypeFontUL2 bigFont3;
@@ -131,7 +131,7 @@ public:
 	bool bLapStart = false;
 
 	// map zoom value
-	float zoomValue = 3.f / 4.f;
+	//float zoomValue = 3.f / 4.f;
 
 	uint64_t lastTickTimer;
 

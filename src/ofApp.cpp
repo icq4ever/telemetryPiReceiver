@@ -7,35 +7,15 @@ void ofApp::setup(){
 	receiver.setup(PORT);
 	ofBackground(0);
 	
-	headerFont.loadFont("fonts/iosevka-term-ss02-medium.ttf", 48);
-	gearFont.loadFont("fonts/iosevka-term-ss02-medium.ttf", 96);
-	descFont.loadFont("fonts/iosevka-term-ss02-medium.ttf", 24);
-							 
 	bigFont1.loadFont("fonts/iosevka-term-ss02-medium.ttf", 600);
 	bigFont2.loadFont("fonts/iosevka-term-ss02-medium.ttf", 540);
 	bigFont3.loadFont("fonts/iosevka-term-ss02-medium.ttf", 340);
 	bigFont3.setLineHeight(320);
 	bigFont3.setLetterSpacing(-0.1);
-
-	rpmFbo.allocate(300, 300, GL_RGBA);
-	accFbo.allocate(320, 320, GL_RGBA);
-	velFbo.allocate(320, 320, GL_RGBA);
-
-	accFbo.begin();
-	ofClear(0);
-	accFbo.end();
-
-	rpmFbo.begin();
-	ofClear(0);
-	rpmFbo.end();
-
-	velFbo	.begin();
-	ofClear(0);
-	velFbo.end();
+	\
 	//rpmPixels.allocate(600, 600, OF_PIXELS_RGBA);
 
 	lastCheckedTimer = ofGetElapsedTimeMillis();
-	canvas.clearLayout();
 
 	bLapStart = false;
 	lastTickTimer = ofGetElapsedTimeMillis();
@@ -45,13 +25,8 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	getOSCMessage();
-	
 	currentLapNo = staticData.completedLaps + 1;
 	
-	updateRpmFbo();
-	updateAccFbo();
-	updateVelFbo();
-	canvas.updateFbo(ofMap(tData.throttle - tData.brake, -1, 1, 0, 1));
 
 	// save to pixel
 	//rpmFbo.readToPixels(rpmPixels);
@@ -326,141 +301,12 @@ void ofApp::getOSCMessage() {
 		if (m.getAddress() == "/controller/steerAngle")		tData.steerAngle = m.getArgAsFloat(0);
 
 
-		canvas.updateCarPosition(tData.carCoordinates.x * zoomValue, tData.carCoordinates.y * zoomValue, tData.carCoordinates.z * zoomValue, tData.heading);
 		// drawing
-		//cout << tData.carCoordinates.x << endl;
-		if (bLapStart) {
-			canvas.pushPolyline(tData.carCoordinates.x * zoomValue, tData.carCoordinates.y * zoomValue, tData.carCoordinates.z * zoomValue);
-		}
-
-		
+		//cout << tData.carCoordinates.x << endl;		
 	}
 }
 
-void ofApp::drawHeaders(int x, int y) {
-	ofPushMatrix();
-	ofPushStyle();
-	ofTranslate(x, y);
-	string carName, circuitName;
-	carName = staticData.carInfo;
-	carName.erase(0, 3);
-	circuitName = staticData.trackInfo;
-	circuitName.erase(0, 3);
-	carName = ofToUpper(carName);
-	circuitName = ofToUpper(circuitName);
 
-	ofSetHexColor(0x00FFFF);
-	headerFont.drawString(carName, 0, 0);
-	ofSetHexColor(0x00AAAA);
-	headerFont.drawString(circuitName, 0, 60);
-	ofPopStyle();
-	ofPopMatrix();
-}
-
-void ofApp::drawStaticData(int x, int y) {
-	ofPushMatrix();
-	ofPushStyle();
-	ofTranslate(x, y);
-	ofDrawBitmapStringHighlight(
-		"DRIVER NAME : " + staticData.playerName + " \n" +
-		"TRACK NAME  : " + staticData.trackInfo + " \n" +
-		"CAR INFO    : " + staticData.carInfo + " \n\n" +
-		"MAX RPM     : " + ofToString(staticData.maxRpm) + " \n" +
-		"MAX TOURQUE : " + ofToString(staticData.maxTorque) + " \n" +
-		"HAS DRS     : " + ofToString(staticData.hasDRS) + "\n" +
-		"HAS ERS     : " + ofToString(staticData.hasERS) + "\n" + 
-		"lap start   : " + ofToString(bLapStart),
-		0, 0);
-	ofPopStyle();
-	ofPopMatrix();
-}
-
-
-void ofApp::drawInputStatus(int x, int y) {
-	ofPushMatrix();
-	ofPushStyle();
-	ofTranslate(x, y);
-	ofSetHexColor(0x000000);
-	ofDrawRectangle(0, 0, 288, 100);
-
-	ofDrawBitmapStringHighlight("INPUT STATUS \nclutch / brake / throttle / steer  ", 4, 110);
-	
-	// draw Clutch
-	ofTranslate(40, 10);
-	ofSetColor(ofColor::blue);
-	ofDrawRectangle(0, ofMap(tData.clutch, 1, 0, 80, 0, true), 20, ofMap(tData.clutch, 1, 0, 0, 80, true));
-	ofSetColor(ofColor::white);
-	ofNoFill();
-	ofDrawRectangle(0, 0, 20, 80);
-
-	ofTranslate(50, 0);
-	ofFill();
-	ofSetColor(ofColor::red);
-	ofDrawRectangle(0, ofMap(tData.brake, 0, 1, 80, 0, true), 20, ofMap(tData.brake, 0, 1, 0, 80, true));
-	ofSetColor(ofColor::white);
-	ofNoFill();
-	ofDrawRectangle(0, 0, 20, 80);
-
-	ofTranslate(50, 0);
-	ofFill();
-	ofSetColor(ofColor::green);
-	ofDrawRectangle(0, ofMap(tData.throttle, 0, 1, 80, 0, true), 20, ofMap(tData.throttle, 0, 1, 0, 80, true));
-	ofSetColor(ofColor::white);
-	ofNoFill();
-	ofDrawRectangle(0, 0, 20, 80);
-
-	ofTranslate(50, 0);
-	ofNoFill();
-	ofSetColor(ofColor::white);
-	ofPushMatrix();
-	ofTranslate(40, 40);
-	ofRotate(ofMap(tData.steerAngle, -1, 1, -180, 180));
-	//cout << steerAngle << endl;
-	ofDrawLine(0, -40, 0, -30);
-	ofDrawCircle(0, 0, 40);
-	ofDrawCircle(0, 0, 30);
-	ofDrawLine(-30, 0, 30, 0);
-	ofDrawLine(0, 0, 0, 30);
-	ofPopMatrix();
-	ofPopStyle();
-	ofPopMatrix();
-}
-void ofApp::drawRpmSpeed(int x, int y) {
-	ofPushMatrix();
-	ofPushStyle();
-	ofTranslate(x, y);
-	
-	ofFill();
-	ofSetColor(ofColor::black);
-	ofDrawRectangle(0, 10, 400, 20);
-	ofSetColor(ofColor::lightGreen);
-	ofDrawRectangle(0, 10, ofMap(tData.rpm, 0, staticData.maxRpm, 0, 400), 20);
-	ofNoFill();
-	ofSetColor(ofColor::white);
-	ofDrawRectangle(0, 10, 400, 20);
-
-	ofDrawBitmapStringHighlight(ofToString(tData.speedKmh) + "Km/h - " + ofToString(tData.rpm, 0) + " RPM", 0, 50);
-
-	ofPopStyle();
-	ofPopMatrix();
-}
-
-void ofApp::drawGearNo(int x, int y){
-	ofPushMatrix();
-	ofPushStyle();
-	ofTranslate(x,y);
-	
-	ofFill();
-	ofSetColor(ofColor::fromHex(0xFFFFFF));
-	string tempG;
-	if(tData.gear == 0)				tempG = "R";
-	else if (tData.gear == 1)		tempG = "N";
-	else							tempG = ofToString(tData.gear - 1);
-	
-	gearFont.drawString(tempG, 0, 96);
-	ofPopStyle();
-	ofPopMatrix();
-}
 
 timeTemplate ofApp::seconds2lapT(float seconds) {
 	timeTemplate t;
@@ -549,17 +395,6 @@ void ofApp::keyPressed(int key){
 		case 'F':
 			ofToggleFullscreen();
 		break;
-		case ' ':
-			canvas.clearLayout();
-			bLapStart = false;
-			break;
-		case '/':
-			canvas.bDrawLayoutOn = !canvas.bDrawLayoutOn;
-			break;
-		case 's':
-			canvas.fbo.readToPixels(canvas.pixels);
-			canvas.exportFBO(staticData.carInfo + "_" + staticData.trackInfo);
-			break;
 		case OF_KEY_LEFT:
 			playMode--;
 			if (playMode < 0)	playMode = MAX_MODE;
