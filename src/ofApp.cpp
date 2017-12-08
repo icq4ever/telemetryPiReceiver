@@ -7,12 +7,14 @@ void ofApp::setup(){
 	receiver.setup(PORT);
 	ofBackground(0);
 	
+	ofHideCursor();
+
 	bigFont1.loadFont("fonts/iosevka-term-ss02-medium.ttf", 600);
 	bigFont2.loadFont("fonts/iosevka-term-ss02-medium.ttf", 540);
 	bigFont3.loadFont("fonts/iosevka-term-ss02-medium.ttf", 340);
 	bigFont3.setLineHeight(320);
 	bigFont3.setLetterSpacing(-0.1);
-	\
+	
 	//rpmPixels.allocate(600, 600, OF_PIXELS_RGBA);
 
 	lastCheckedTimer = ofGetElapsedTimeMillis();
