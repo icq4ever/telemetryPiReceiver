@@ -12,8 +12,10 @@ void ofApp::setup(){
 	bigFont1.loadFont("fonts/iosevka-term-ss02-medium.ttf", 600);
 	bigFont2.loadFont("fonts/iosevka-term-ss02-medium.ttf", 540);
 	bigFont3.loadFont("fonts/iosevka-term-ss02-medium.ttf", 340);
+	bigFont4.loadFont("fonts/iosevka-term-ss02-medium.ttf", 180);
 	bigFont3.setLineHeight(320);
 	bigFont3.setLetterSpacing(-0.1);
+	bigFont4.setLetterSpacing(-0.1);
 	
 	//rpmPixels.allocate(600, 600, OF_PIXELS_RGBA);
 
@@ -201,6 +203,9 @@ void ofApp::draw() {
 			break;
 		case 6:
 			drawRPMGraphic();
+			break;
+		case 7:
+			greenFrag();
 			break;
 		default:
 			break;
@@ -463,6 +468,12 @@ void ofApp::drawRPMGraphic() {
 	ofPopStyle();
 }
 
+void ofApp::greenFrag() {
+	ofPushStyle();
+	ofBackground(ofColor::fromHex(0x00CC00));
+	bigFont4.drawString("GREEN FLAG", ofGetWidth() / 2, ofGetHeight() / 2, 0.f, 0.f, UL2_TEXT_ALIGN_CENTER | UL2_TEXT_ALIGN_V_MIDDLE);
+	ofPopStyle();
+}
 
 void ofApp::tireTemperature() {}
 

@@ -7,7 +7,7 @@
 
 #define PORT 9000
 #define recInterval 100
-#define MAX_MODE 6
+#define MAX_MODE 7
 
 struct timeTemplate {
 	int min;
@@ -124,6 +124,7 @@ public:
 	ofxTrueTypeFontUL2 bigFont1;
 	ofxTrueTypeFontUL2 bigFont2;
 	ofxTrueTypeFontUL2 bigFont3;
+	ofxTrueTypeFontUL2 bigFont4;
 
 	// current Lap Count
 	int currentLapNo = -1;
@@ -145,5 +146,6 @@ public:
 	void tireTemperature();
 	void drawInput();
 	void drawRPMGraphic();
+	void greenFrag();
 };
 
