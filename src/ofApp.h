@@ -3,9 +3,11 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "canvas.h"
+#include "ofxTrueTypeFontUL2.h"
 
 #define PORT 9000
 #define recInterval 100
+#define MAX_MODE 6
 
 struct timeTemplate {
 	int min;
@@ -82,12 +84,12 @@ public:
 
 
 	// draw telemetry functions
+	void drawHeaders(int x, int y);
+	void drawStaticData(int x, int y);
 	void drawInputStatus(int x, int y);
 	void drawRpmSpeed(int x, int y);
 	void drawLapTimeInformation(int x, int y);
-
-	// rpmDrawing
-	void rpmDrawing(int x, int y);
+	void drawGearNo(int x, int y);
 
 	timeTemplate seconds2lapT(float seconds);
 	timeTemplate millis2lapT(int milliSeconds);
@@ -99,12 +101,49 @@ public:
 	timeTemplate bestLap;
 
 	ofFbo rpmFbo;
-	//ofPixels rpmPixels;
+	ofFbo accFbo;
+	ofFbo velFbo;
 
-	canvas drawingCanvas;
+	void updateRpmFbo();
+	void updateAccFbo();
+	void updateVelFbo();
+	void rpmDrawing(int x, int y);
+	void accDrawing(int x, int y);
+	void velDrawing(int x, int y);
+
+	//canvas drawingCanvas;
 
 	TstaticData staticData;
 	telemetryData tData;
-	ofPolyline layout;
+	//ofPolyline layout;
+	Canvas canvas;
+	
+	ofxTrueTypeFontUL2 headerFont;
+	ofxTrueTypeFontUL2 gearFont;
+	ofxTrueTypeFontUL2 descFont;
+	ofxTrueTypeFontUL2 bigFont1;
+	ofxTrueTypeFontUL2 bigFont2;
+	ofxTrueTypeFontUL2 bigFont3;
+
+	// current Lap Count
+	int currentLapNo = -1;
+	int lastLapNo = -1;
+	bool bLapStart = false;
+
+	// map zoom value
+	float zoomValue = 3.f / 4.f;
+
+	uint64_t lastTickTimer;
+
+	int playMode = 0;
+
+	void drawGearNumber();
+	void drawRPMText();
+	void drawKPHText();
+	void drawLapProgressPercentage();
+	void drawLapTime();
+	void tireTemperature();
+	void drawInput();
+	void drawRPMGraphic();
 };
 
